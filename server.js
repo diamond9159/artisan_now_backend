@@ -26,6 +26,8 @@ app.use(
 
 // mongoose db connect 
 const db = require("./app/models");
+const { g_func } = require("./app/global");
+const { dbConfig } = require("./app/config")
 const Role = db.role;
 
 db.mongoose
@@ -35,7 +37,7 @@ db.mongoose
     })
     .then(() => {
         console.log("Successfully connect to MongoDB.");
-        initial();
+        g_func.initial(Role);
     })
     .catch(err => {
         console.error("Connection error", err);
@@ -44,8 +46,8 @@ db.mongoose
 
 
 // routes
-require('./app/routes/auth.routes')(app);
-require('./app/routes/user.routes')(app);
+require('./app/routes');
+
 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to artisanNow application." });
