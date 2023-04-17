@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
     cookieSession({
         name: "artisanNow-session",
+        keys: ["artisan_key1", "arisan_key2"],
         secret: "COOKIE_SECRET", // should use as secret environment variable
         httpOnly: true
     })
@@ -45,10 +46,27 @@ db.mongoose
     });
 
 
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    );
+    next();
+});
+
 // routes
-require('./app/routes');
+const routes = require('./app/routes');
+routes.authRoutes(app);
+routes.userRoutes(app);
 
-
+app.post("/", (req, res) => {
+    res.json({ message: "Welcome to artisanNow application." });
+});
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to artisanNow application." });
 });
